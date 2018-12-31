@@ -77,10 +77,11 @@ def cleanse_file(arg_in_file,arg_out_file):
     #                                       fix         hash                        hash        hash                        
 
     header = "call_id|start_time|start_date|start_hour|end_time|duration|agent_id|extention|device|phone_number|dialed_in_number|direction|logger"
+    hhour = ''
 
     #a=dict(['filename':0,'created','call_id','start_time','end_time','duration','is_complete_interaction','agent_name','agent_id','extention','phone_number'
     #    ,'dialed_in_number','direction','logger','channel'],[0,1,2,4,6,8,10,12,14,16,18,20,22,24,26])
-
+    
     with open(arg_in_file, "rU") as in_file, open(arg_out_file,'w') as out_file:
         out_file.write(header + '\n')
         reader = csv.reader(in_file,delimiter='\t')
