@@ -104,7 +104,7 @@ def transcribe_gcs_with_word_time_offsets(
     transcript_file_name = "transcript_" + csv_file_name
     speaker_file_name = "speaker_"  + csv_file_name
 
-    audio = types.RecognitionAudio(uri=gcs_uri)
+    audio = types.RecognitionAudio(uri=gcs_uri) 
     config = types.RecognitionConfig(
         #encoding=enums.RecognitionConfig.AudioEncoding.MULAW,
         encoding=encoding,
