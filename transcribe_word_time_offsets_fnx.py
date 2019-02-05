@@ -1,31 +1,26 @@
 #!/usr/bin/env python
 
-# Copyright 2017 Google Inc. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-"""Google Cloud Speech API sample that demonstrates word time offsets.
-
+"""
 Example usage:
-    python transcribe_word_time_offsets.py resources/audio.raw
-    python transcribe_word_time_offsets.py \
-        gs://cloud-samples-tests/speech/vr.flac
+    
+    python transcribe_word_time_offsets.py -f resources/audio.raw -l 'en-US'
+    
+    python transcribe_word_time_offsets.py -u gs://cloud-samples-tests/speech/vr.flac -l 'he-IL'
+
 """
 
-import argparse, io, random, datetime, csv
+#from google.cloud import speech
+from google.cloud import speech_v1p1beta1 as speech
+#from google.cloud.speech import enums
+from google.cloud.speech_v1p1beta1 import enums
+#from google.cloud.speech import types
+from google.cloud.speech_v1p1beta1 import types
+
+import time, argparse, io, random, datetime, csv,sys,getopt
+
 
 def message(msg, level="Info"):
-  logfile = '/tmp/speec-to-text.log'
+  logfile = '/tmp/transcribe_word_time_offset.log'
   now = datetime.datetime.now()
   time =  now.isoformat()
   str = level + "|" + time + "|" + msg + "\n"
@@ -51,12 +46,10 @@ def extract_index_from_file_name(gcs_uri):
 
     return return_value
 
-def transcribe_file_with_word_time_offsets(speech_file,index):
+def transcribe_file_with_word_time_offsets(speech_file,index,language='en-US'):
     """Transcribe the given audio file synchronously and output the word time
     offsets."""
-    from google.cloud import speech
-    from google.cloud.speech import enums
-    from google.cloud.speech import types
+    
 
     client = speech.SpeechClient()
 
@@ -67,7 +60,7 @@ def transcribe_file_with_word_time_offsets(speech_file,index):
     config = types.RecognitionConfig(
         encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=16000,
-        language_code='en-US',
+        language_code=language,
         enable_word_time_offsets=True)
 
     response = client.recognize(config, audio)
@@ -86,32 +79,45 @@ def transcribe_file_with_word_time_offsets(speech_file,index):
                 end_time.seconds + end_time.nanos * 1e-9))
 
 
+
+
 # [START speech_transcribe_async_word_time_offsets_gcs]
-def transcribe_gcs_with_word_time_offsets(gcs_uri, index=random.randint(1,9223372036854775807)):
+def transcribe_gcs_with_word_time_offsets(
+    gcs_uri, 
+    index=random.randint(1,9223372036854775807),
+    language='en-US',
+    enable_speaker_diarization=False,
+    encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16):
     """Transcribe the given audio file asynchronously and output the word time
     offsets."""
-    from google.cloud import speech
-    from google.cloud.speech import enums
-    from google.cloud.speech import types
-    import time
+    
 
     #from google.cloud import speech_v1p1beta1 as speech
+
+    message ('now working on {} with language {}'.format(gcs_uri,language))
 
     client = speech.SpeechClient()
 
     timeout_seconds = 3600
     csv_file_name = str(index) + ".csv"
     metadata_csv_file_name = "meta_" + csv_file_name
+    transcript_file_name = "transcript_" + csv_file_name
+    speaker_file_name = "speaker_"  + csv_file_name
 
     audio = types.RecognitionAudio(uri=gcs_uri)
     config = types.RecognitionConfig(
-        encoding=enums.RecognitionConfig.AudioEncoding.MULAW,
+        #encoding=enums.RecognitionConfig.AudioEncoding.MULAW,
+        encoding=encoding,
         #sample_rate_hertz=16000,
-        sample_rate_hertz=8000,
-        language_code='he-IL',
-        enable_word_time_offsets=True)
-        #enable_speaker_diarization=True,
+        #sample_rate_hertz=8000,
+        language_code=language,
+        enable_word_time_offsets=True,
+        enable_speaker_diarization=enable_speaker_diarization)
+        #model='phone_call')
+        #use_enhanced=True)
         #diarization_speaker_count=2)
+
+    message ('running {}'.format(config))
 
     operation = client.long_running_recognize(config, audio)
 
@@ -124,32 +130,36 @@ def transcribe_gcs_with_word_time_offsets(gcs_uri, index=random.randint(1,922337
     
     result = operation.result(timeout=timeout_seconds)
 
-    with open(csv_file_name, 'w') as csvfile:
-            fieldnames = ['call_id', 'word', 'start_time','end_time','confidence']
+    with open(csv_file_name, 'w') as csvfile, open (transcript_file_name,'w') as csvfile2:
+            fieldnames = ['call_id', 'word', 'start_time','end_time','confidence','speaker']
+            fieldnames2 = ['transcript']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer2 = csv.DictWriter(csvfile2, fieldnames=fieldnames2)
             writer.writeheader()
+            writer2.writeheader()
             for result in result.results:
                 alternative = result.alternatives[0]
+                writer2.writerow({'transcript': alternative.transcript.encode('utf-8')})
                 for word_info in alternative.words:
                     word = word_info.word
                     start_time = word_info.start_time
                     end_time = word_info.end_time
-                    message('call_id: {}, word: {}, start_time: {}, end_time: {}, confidence: {}'.format(
+                    speaker = word_info.speaker_tag
+                    message('call_id: {}, word: {}, start_time: {}, end_time: {}, confidence: {} speaker: {}'.format(
                     index,
                     word.encode('utf-8'),
                     start_time.seconds + start_time.nanos * 1e-9,
                     end_time.seconds + end_time.nanos * 1e-9,
-                    alternative.confidence))
+                    alternative.confidence,
+                    speaker))
 
                     writer.writerow({'call_id': index, 'word': word.encode('utf-8'),
                         'start_time': start_time.seconds + start_time.nanos * 1e-9 ,
                     'end_time': end_time.seconds + end_time.nanos * 1e-9,
-                    'confidence': alternative.confidence})
+                    'confidence': alternative.confidence,'speaker': speaker})
 
     end = time.time()
     elapsed_seconds = end - start
-
-    #close(csv_file_name)
 
     message('Finished processing of file {}, with call_id {}, in {}, seconds. File is {}, seconds long. into {}'.format(
         gcs_uri,
@@ -164,11 +174,42 @@ def transcribe_gcs_with_word_time_offsets(gcs_uri, index=random.randint(1,922337
             writer.writerow({'gcs_uri': gcs_uri, 'call_id': index, 'processing_elapsed_seconds':elapsed_seconds,
                 'call_length':end_time.seconds + end_time.nanos * 1e-9,'csv_file_name':csv_file_name})
 
-
-    # need to update some status DB
-
-
 # [END speech_transcribe_async_word_time_offsets_gcs]
+
+def create_speaker_csv(index):
+
+    csv_file_name = str(index) + ".csv"
+    speakers_file_csv = "speaker_"  + csv_file_name
+
+    with open(csv_file_name, 'rU') as csvfile, open (speakers_file_csv,'w') as speaker_file:
+        fieldnames = ['speaker','sentence']
+        writer = csv.DictWriter(speaker_file, fieldnames=fieldnames)
+        reader = csv.DictReader(csvfile,delimiter=',')
+        #writer = csv.DictWriter(speaker_file)
+        prev_speaker=500
+        line=''
+        for row in reader:
+            word = row['word']
+            speaker = row['speaker']
+            message ('reading word: {}, speaker: {}'.format(word,speaker))
+            if (prev_speaker == speaker):
+                message ('same speaker')
+                line = line + ' ' + word 
+                message ('line is: {}'.format(line))
+            else:
+                message ('speaker changed')
+                if (line != ''):
+                    writer.writerow({'speaker':prev_speaker, 'sentence': line})
+                    line = ''
+            prev_speaker = speaker
+
+
+            
+
+
+
+
+            
 
 def transcribe_file_with_diarization(gcs_uri, index=random.randint(1,9223372036854775807)):
     """Transcribe the given audio file synchronously with diarization."""
@@ -228,18 +269,60 @@ def transcribe_file_with_diarization(gcs_uri, index=random.randint(1,92233720368
     #                                               word_info.speaker_tag))
     # [END speech_transcribe_diarization_beta]
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument(
-        'path', help='File or GCS path for audio file to be recognized')
-    args = parser.parse_args()
-    if args.path.startswith('gs://'):
-        index=extract_index_from_file_name(args.path)
-        transcribe_gcs_with_word_time_offsets(args.path,index)
-        #transcribe_file_with_diarization(args.path)
-    else:
-        transcribe_file_with_word_time_offsets(args.path)
 
+def main(argv):
+    message ('Started a run ---')
+    is_local = False
+    is_gcs = False 
+    index_extract_required=False
+    enable_speaker_diarization=False
+    speaker_csv_index=0
+    langauge = 'en-US'
+    url=''
+    filepath=''
+    encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16
+
+    try:
+        opts, args = getopt.getopt(argv,"f:l:u:dms:")
+    except getopt.GetoptError:
+        sys.exit(42)
+    for opt, arg in opts:
+        if opt == "-f":
+            filepath = arg
+            is_local = True
+        elif opt == "-l":
+            language = arg
+        elif opt == "-u":
+            is_gcs = True
+            url = arg
+        elif opt == "-d":
+            enable_speaker_diarization=True
+        elif opt == "-m":
+            encoding=enums.RecognitionConfig.AudioEncoding.MULAW
+        elif opt == '-s':
+            speaker_csv_index = arg
+
+    if (speaker_csv_index != 0):
+        create_speaker_csv(speaker_csv_index)
+        exit(0)
+
+    index=extract_index_from_file_name(url)
+    
+    message('now with index {} is_local {} is_gcs {}'.format(index,is_local,is_gcs))
+
+    if (is_local):
+        transcribe_file_with_word_time_offsets(filepath,index,language,enable_speaker_diarization,encoding)
+    elif (is_gcs):
+        transcribe_gcs_with_word_time_offsets(url,index,language,enable_speaker_diarization,encoding)
+
+    create_speaker_csv(index)
+
+if __name__ == "__main__":
+    script_name=sys.argv[0]
+    arguments = len(sys.argv) - 1
+
+    if (arguments == 0):
+        sys.exit(42)
+
+    main(sys.argv[1:])
 
