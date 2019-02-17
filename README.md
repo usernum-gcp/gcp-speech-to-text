@@ -10,17 +10,20 @@ This rep is to help ramping up while working with the Google Cloud Speech to Tex
 ## What is in here
 
 This repository is supposed to help with starting off at the right foot with the following:
-1. transcribing voice
-2. uploading results to bigquery
+1. Transcribing voice
+2. Uploading results to bigquery
 
 ### Transcribing Voice
-for that use the following
-1. transcribe_word_time_offsets.py 
+1. Transcribe_word_time_offsets.py 
 
-the file is good for local or gcs based voice files
-it creates:
+This is for transcribing local or gcs voice files.
+
+The script creates two files
+
 a. a CSV with word per line 
+
 b. a CSV with statistics how long it took to create the file and other metadata 
+
 
 ### Creating metadata 
 1. process.py
