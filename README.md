@@ -16,10 +16,10 @@ This repository is supposed to help with starting off at the right foot with the
 ### Transcribing Voice
 **Transcribe_word_time_offsets.py**
 
-  - This is for transcribing local or gcs voice files.
-  - The script creates two files
-    - a. a CSV with word per line 
-    - b. a CSV with statistics how long it took to create the file and other metadata 
+   This is for transcribing local or gcs voice files.
+   The script creates two files
+     a. a CSV with word per line 
+     b. a CSV with statistics how long it took to create the file and other metadata 
 
 
 ### Creating metadata 
