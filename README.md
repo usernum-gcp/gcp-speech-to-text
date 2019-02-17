@@ -14,7 +14,7 @@ This repository is supposed to help with starting off at the right foot with the
 2. Uploading results to bigquery
 
 ### Transcribing Voice
-**Transcribe_word_time_offsets.py**
+1. **Transcribe_word_time_offsets.py**
 
    This is for transcribing local or gcs voice files.
    The script creates two files
@@ -23,5 +23,23 @@ This repository is supposed to help with starting off at the right foot with the
 
 
 ### Creating metadata 
-1. process.py
-This   
+1. **extract_NICE_input_to_csv.py**
+   This is for converting the NICE metadata into a meaningful CSV
+
+2. **combine_calls_into_csv.py**
+   This is for combining all calls into a single CSV - for a single upload to BigQuery
+
+3. **iterate_files.bash**
+   This is for rounding up files and preparing for an upload one-ny-one into BigQuery
+
+4. **iterate_load_stats_to_bq.bash**
+   This is for uploading individual statistics files into BigQuery
+
+5. **iterate_metadata_to_bq.bash**
+   This is to upload the metadata files into BigQuery
+
+6. **iterate_speech_to_bq.bash**
+   This is to upload the CSVs with the transcriptions into BigQuery
+
+### Other files
+The rest of the files you will see in this folder are work in progress or just references to other possiblities in working with the SDK.
