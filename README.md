@@ -5,3 +5,5 @@ This rep is to help ramping up while working with the Google Cloud Speech to Tex
 ## Reference documentation
 
 ![Cloud Speech-to-Text Documentation](https://cloud.google.com/speech-to-text/docs/)
+
+![Python reference](https://cloud.google.com/speech-to-text/docs/reference/libraries#client-libraries-install-python)
