@@ -43,3 +43,8 @@ This repository is supposed to help with starting off at the right foot with the
 
 ### Other files
 The rest of the files you will see in this folder are work in progress or just references to other possiblities in working with the SDK.
+
+## Identifying postal code
+There are cases when you might want to identify a postal code in the transcription.
+For that you should iterate through the sentences transcribed and look for patterns. 
+if you are not going to use DLP API, that can identfiy more than postal codes, you should clean spaces between numbers and then run some regular expressions. here is a cool(https://stackoverflow.com/questions/578406/what-is-the-ultimate-postal-code-and-zip-regex) starting point
