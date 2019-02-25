@@ -1,4 +1,4 @@
-# gcp-speech-to-txt
+# Google Cloud Platform - Speech to Text with Python Library
 
 This rep is to help ramping up while working with the Google Cloud Speech to Text python sdk 
 
@@ -47,4 +47,4 @@ The rest of the files you will see in this folder are work in progress or just r
 ## Identifying postal code
 There are cases when you might want to identify a postal code in the transcription.
 For that you should iterate through the sentences transcribed and look for patterns. 
-if you are not going to use DLP API, that can identfiy more than postal codes, you should clean spaces between numbers and then run some regular expressions. [here](https://stackoverflow.com/questions/578406/what-is-the-ultimate-postal-code-and-zip-regex) is a cool starting point
+if you are not going to use DLP API, that can identfiy more than postal codes, you should clean spaces between numbers and then run some regular expressions. [here](https://stackoverflow.com/questions/578406/what-is-the-ultimate-postal-code-and-zip-regex) is a cool starting point.
