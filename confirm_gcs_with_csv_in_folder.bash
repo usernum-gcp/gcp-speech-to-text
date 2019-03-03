@@ -3,7 +3,7 @@
 if [ "${1}" != "" ] ;  then
 	path=${1} 
 else
-	path='gs://fnx-it-*'
+	path='gs://bucket-it-*'
 fi
 
 list_of_csv=`ls | grep csv`
