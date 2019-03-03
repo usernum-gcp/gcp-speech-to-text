@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PROJECT_ID=fnx-speech2text
-DATASET=fnx_speech_to_text_poc
-TABLE=fnx_speech_to_text_poc_loading_stats
+PROJECT_ID=name-speech2text
+DATASET=name_speech_to_text_poc
+TABLE=name_speech_to_text_poc_loading_stats
 FOLDER="~/20190101/upload_stats/"
 
 if [ "$#" -ne "0" ] ; then
