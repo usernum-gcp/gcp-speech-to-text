@@ -13,7 +13,7 @@ def download_blob2(bucket_name, source_blob_name, destination_file_name):
 
 	print (blob.download_as_string())
 
-download_blob2('fnx-it-speech2text-in-poc-3',' ',' ')
+download_blob2('bucket-it-speech2text-in-poc-3',' ',' ')
 
 
 
