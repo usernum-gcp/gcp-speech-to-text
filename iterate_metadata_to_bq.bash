@@ -3,9 +3,9 @@
 # THIS IS LOOKING FOR THE .out FILES 
 # $1 will be the folder to look into
 
-PROJECT_ID=fnx-speech2text
-DATASET=fnx_speech_to_text_poc
-TABLE=fnx_speech_to_text_poc_metadata
+PROJECT_ID=name-speech2text
+DATASET=name_speech_to_text_poc
+TABLE=name_speech_to_text_poc_metadata
 FOLDER=~/20190101/metadata/
 SCRIPTS=~/scripts/
 
