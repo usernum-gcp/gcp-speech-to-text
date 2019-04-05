@@ -133,7 +133,7 @@ def transcribe_wav_file(data,context):
     operation = client.long_running_recognize(config, audio)
 
     csv_file_name="/tmp/"+"i"+index+"p"+phone_number+"w.csv"
-    transcript_file_name="/tmp/"+"i"+index+"p"+phone_number+"w.csv"
+    transcript_file_name="/tmp/"+"i"+index+"p"+phone_number+"t.csv"
 
     result = operation.result(timeout=timeout_seconds)
 
