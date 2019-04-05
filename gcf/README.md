@@ -14,7 +14,7 @@ gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable speech.googleapis.com
 ```
 
-* Deploy the function 'gcf_speech_to_text' to be triggered upon object upload to <bucket-name>
+* Deploy the function 'gcf_speech_to_text' to be triggered upon object upload to <\bucket-name>
 
 The parameter <bucket-name> is the actual name of the bucket.  'gs://'' is NOT required.
 
