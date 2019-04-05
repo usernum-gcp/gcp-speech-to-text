@@ -6,7 +6,7 @@ This bunch of files are the functions to deploy in order to get the following fl
 
 This architecture is good only as long as the transcription takes less than 9 minutes (540 seconds)
 
-## creating the function
+## Creating the function
 
 * Enable the relevant APIs
 ```
@@ -14,14 +14,14 @@ gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable speech.googleapis.com
 ```
 
-* Deploy the function.
-<bucket-name> is the actual name,  'gs://'' is NOT required
-This will take a couple of minutes. 
-at the end, there will be the cloud function gcf_speech_to_text ready.
+* Deploy the function 'gcf_speech_to_text' to be triggered upon object upload to <bucket-name>
+
+The parameter <bucket-name> is the actual name of the bucket.  'gs://'' is NOT required.
+
+The following will take a couple of minutes.
 ```
 bash deploy_gcf.bash <bucket-name>
 ```
-
 
 ## Logs of cloud functions
 Check the functions logging this way:
