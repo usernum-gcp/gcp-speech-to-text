@@ -8,18 +8,20 @@ This architecture is good only as long as the transcription takes less than 9 mi
 
 ## creating the function
 
-1. first, enable the relevant APIs
+* Enable the relevant APIs
 ```
 gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable speech.googleapis.com
 ```
 
-<bucket-name> is the actual name, no gs:// is required
+* Deploy the function.
+<bucket-name> is the actual name,  'gs://'' is NOT required
+This will take a couple of minutes. 
+at the end, there will be the cloud function gcf_speech_to_text ready.
 ```
 bash deploy_gcf.bash <bucket-name>
 ```
-This will take a couple of minutes. 
-at the end, there will be the cloud function gcf_speech_to_text ready.
+
 
 ## Logs of cloud functions
 Check the functions logging this way:
