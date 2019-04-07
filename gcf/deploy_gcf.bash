@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if [ "$1" == "" ] ; then
-	exit 1
-else
-	BUCKET=$1
+source params.bash
+
+if [ "$1" != "" ] ; then
+	BUCKET=$1	
 fi
 
-gcloud beta functions deploy gcf_speech_to_text \
- --runtime python37 \
+gcloud beta functions deploy ${TRANSCRIBE_FUNCTION_NAME} \
+--runtime python37 \
 --trigger-resource $BUCKET \
 --trigger-event google.storage.object.finalize
 
