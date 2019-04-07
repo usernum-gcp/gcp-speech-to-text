@@ -132,7 +132,7 @@ def transcribe_gcs_with_word_time_offsets(
     result = operation.result(timeout=timeout_seconds)
 
     with open(csv_file_name, 'w') as csvfile, open (transcript_file_name,'w') as csvfile2:
-            fieldnames = ['call_id', 'word', 'start_time','end_time','confidence','speaker']
+            fieldnames = ['call_id', 'word', 'start_time','end_time','confidence']
             fieldnames2 = ['transcript']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer2 = csv.DictWriter(csvfile2, fieldnames=fieldnames2)
@@ -145,19 +145,18 @@ def transcribe_gcs_with_word_time_offsets(
                     word = word_info.word
                     start_time = word_info.start_time
                     end_time = word_info.end_time
-                    speaker = word_info.speaker_tag
-                    message('call_id: {}, word: {}, start_time: {}, end_time: {}, confidence: {} speaker: {}'.format(
+                    #speaker = word_info.speaker_tag
+                    message('call_id: {}, word: {}, start_time: {}, end_time: {}, confidence: {}'.format(
                     index,
                     word.encode('utf-8'),
                     start_time.seconds + start_time.nanos * 1e-9,
                     end_time.seconds + end_time.nanos * 1e-9,
-                    alternative.confidence,
-                    speaker))
+                    alternative.confidence))
 
                     writer.writerow({'call_id': index, 'word': word.encode('utf-8'),
                         'start_time': start_time.seconds + start_time.nanos * 1e-9 ,
                     'end_time': end_time.seconds + end_time.nanos * 1e-9,
-                    'confidence': alternative.confidence,'speaker': speaker})
+                    'confidence': alternative.confidence})
 
     end = time.time()
     elapsed_seconds = end - start
@@ -177,40 +176,8 @@ def transcribe_gcs_with_word_time_offsets(
 
 # [END speech_transcribe_async_word_time_offsets_gcs]
 
-def create_speaker_csv(index):
 
-    csv_file_name = str(index) + ".csv"
-    speakers_file_csv = "speaker_"  + csv_file_name
-
-    with open(csv_file_name, 'rU') as csvfile, open (speakers_file_csv,'w') as speaker_file:
-        fieldnames = ['speaker','sentence']
-        writer = csv.DictWriter(speaker_file, fieldnames=fieldnames)
-        reader = csv.DictReader(csvfile,delimiter=',')
-        #writer = csv.DictWriter(speaker_file)
-        prev_speaker=500
-        line=''
-        for row in reader:
-            word = row['word']
-            speaker = row['speaker']
-            message ('reading word: {}, speaker: {}'.format(word,speaker))
-            if (prev_speaker == speaker):
-                message ('same speaker')
-                line = line + ' ' + word 
-                message ('line is: {}'.format(line))
-            else:
-                message ('speaker changed')
-                if (line != ''):
-                    writer.writerow({'speaker':prev_speaker, 'sentence': line})
-                    line = ''
-            prev_speaker = speaker
-
-
-            
-
-
-
-
-            
+          
 
 def transcribe_file_with_diarization(gcs_uri, index=random.randint(1,9223372036854775807)):
     """Transcribe the given audio file synchronously with diarization."""
@@ -257,7 +224,7 @@ def transcribe_file_with_diarization(gcs_uri, index=random.randint(1,92233720368
     #result = operation.results[-1]
     result = operation.result(timeout=timeout_seconds)
 
-    print result
+    print (result)
 
     #words_info = result.alternatives[0].words
     #words_info = result.results.alternative[0]
@@ -303,9 +270,6 @@ def main(argv):
         elif opt == '-s':
             speaker_csv_index = arg
 
-    if (speaker_csv_index != 0):
-        create_speaker_csv(speaker_csv_index)
-        exit(0)
 
     index=extract_index_from_file_name(url)
     
@@ -316,7 +280,6 @@ def main(argv):
     elif (is_gcs):
         transcribe_gcs_with_word_time_offsets(url,index,language,enable_speaker_diarization,encoding)
 
-    create_speaker_csv(index)
 
 if __name__ == "__main__":
     script_name=sys.argv[0]
