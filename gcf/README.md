@@ -11,23 +11,23 @@ This simple tutorial demonstrates writing, deploying, and triggering a Backgroun
 The tutorial is based on [this](https://cloud.google.com/dataflow/docs/quickstarts/quickstart-templates
 ) and [this](https://codelabs.developers.google.com/codelabs/cpb101-bigquery-dataflow-streaming/index.html?index=..%2F..next17#0)
 
-## Getting the repo
+### Getting the repo
 * From the cloud shell or any other terminal, get the repo with all code and scripts with the following command
 ```
 git clone https://github.com/amiteinav/gcp-speechto-text.git
 cd gcp-speech-to-text/gcf/
 ```
 
-## Setting  Google Cloud BigQuery 
+### Setting  Google Cloud BigQuery 
 * From the cloud shell or any other terminal, Create the dataset and the table
 ```
 bash bq_settings.bash
 ```
 
-## Creating the Google Cloud Pub/Sub settings
+### Creating the Google Cloud Pub/Sub settings
 
 
-## Creating the Google Cloud Dataflow settings (Using the Pub/Sub-to-BigQuery Template)
+### Creating the Google Cloud Dataflow settings (Using the Pub/Sub-to-BigQuery Template)
 https://cloud.google.com/dataflow/docs/guides/templates/provided-templates#cloud-pubsub-to-bigquery
 
 * Run the following command
@@ -35,7 +35,7 @@ https://cloud.google.com/dataflow/docs/guides/templates/provided-templates#cloud
 bash df_settings.bash
 ```
 
-## Creating the Google Cloud Function
+### Creating the Google Cloud Function
 
 * From the cloud shell or any other terminal, enable the relevant APIs
 ```
@@ -50,7 +50,7 @@ bash deploy_gcf.bash [bucket-name]s
 The script will take a couple of minutes.
 
 
-## Logs of cloud functions
+### Logs of cloud functions
 Check the functions logging this way:
 ```
 gcloud beta functions logs read <FUNCTION_NAME> --execution-id EXECUTION_ID
@@ -60,7 +60,7 @@ example:
 gcloud beta functions logs read gcf_speech_to_text 
 ```
 
-## Testing code
+### Testing code
 while working on the gcf, you can use this to test deployment + file upload + watching the logs
 ```
 bash test_gcf.bash $BUCKET_NAME
