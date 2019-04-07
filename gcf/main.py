@@ -12,6 +12,16 @@
 # limitations under the License.
 
 
+def send_to_pubsub(topic_name,data,project_id):
+    from google.cloud import pubsub
+
+
+    publisher = pubsub.PublisherClient()
+    topic_path = publisher.topic_path(project_id, topic_name)
+    data = data.encode('utf-8')
+    future = publisher.publish(topic_path, data=data)
+    print ('Published {} of message ID {}.'.format(data, future.result()))
+
 
 # [START storage_upload_file]
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
@@ -95,6 +105,9 @@ def gcf_speech_to_text(data, context):
 
 def transcribe_wav_file(data,context):
 
+    ## Should be an environment variable!
+    project_id="mimunnlp"
+
     gcs_uri="gs://"+data['bucket']+'/'+data['name']
 
     print(gcs_uri)
@@ -107,6 +120,8 @@ def transcribe_wav_file(data,context):
     from google.cloud.speech import enums
     from google.cloud.speech import types
     import csv
+    import json
+    import datetime
 
 
     timeout_seconds = 550
@@ -122,13 +137,7 @@ def transcribe_wav_file(data,context):
         #enableSpeakerDiarization=True,
         #enableWordTimeOffsets=True
         #diarizationSpeakerCount=2
-        #enable_word_time_offsets=True,
-        #enable_speaker_diarization=True,
-        #diarization_speaker_count=2
         )
-        #model='phone_call')
-        #use_enhanced=True)
-        #diarization_speaker_count=2)
 
     operation = client.long_running_recognize(config, audio)
 
@@ -136,6 +145,10 @@ def transcribe_wav_file(data,context):
     transcript_file_name="/tmp/"+"i"+index+"p"+phone_number+"t.csv"
 
     result = operation.result(timeout=timeout_seconds)
+
+    #wbw_data =[]
+    #t_data = []
+    ts=datetime.datetime.utcnow().isoformat()
 
     with open(csv_file_name, 'w') as csvfile, open (transcript_file_name,'w') as csvfile2:
         fieldnames = ['call_id', 'phone_number','word', 'start_time','end_time','confidence']
@@ -148,25 +161,51 @@ def transcribe_wav_file(data,context):
         for result in result.results:
             alternative = result.alternatives[0]
             transcripter=str(transcripter)+" "+str(alternative.transcript.encode('utf-8'))
-            #print ('alternative: {}'.format(alternative.transcript.encode('utf-8')))
             for word_info in alternative.words:
                 word = word_info.word
                 start_time = word_info.start_time
                 end_time = word_info.end_time
-                '''
-                print ('call_id: {}, word: {}, start_time: {}, end_time: {}, confidence: {} '.format(
-                        index,word.encode('utf-8'),
-                        start_time.seconds + start_time.nanos * 1e-9,
-                        end_time.seconds + end_time.nanos * 1e-9,
-                        alternative.confidence))
-                '''
                 writer.writerow({'call_id': index, 'phone_number': phone_number,'word': word.encode('utf-8'),
                         'start_time': start_time.seconds + start_time.nanos * 1e-9 ,
                     'end_time': end_time.seconds + end_time.nanos * 1e-9,
                     'confidence': alternative.confidence})
 
-        writer2.writerow({'call_id': index, 'phone_number': phone_number, 'transcript': transcripter})
+                jsontxt = "{"
+                jsontxt = jsontxt+"\"timestamp\":\"" + str(ts)+"\""
+                jsontxt = jsontxt+",\"call_id\":\""+str(index)+"\""
+                jsontxt = jsontxt+",\"phone_number\":\""+str(phone_number)+"\""
+                jsontxt = jsontxt+",\"word\":\""+str(word.encode('utf-8'))+"\""
+                jsontxt = jsontxt+",\"start_time\":\""+str(start_time.seconds+start_time.nanos*1e-9)+"\""
+                jsontxt = jsontxt+",\"end_time\":\""+str(end_time.seconds + end_time.nanos * 1e-9)+"\""
+                jsontxt = jsontxt+",\"confidence\":\""+str(alternative.confidence)+"\""
+                jsontxt = jsontxt+"}"
 
+                send_to_pubsub("word-by-word-topic",jsontxt,project_id)
+
+                '''
+                wbw_data.append({'timestamp':ts,'call_id': index, 'phone_number': phone_number,'word': word.encode('utf-8'),
+                        'start_time': start_time.seconds + start_time.nanos * 1e-9 ,
+                    'end_time': end_time.seconds + end_time.nanos * 1e-9,
+                    'confidence': alternative.confidence})
+                '''
+        writer2.writerow({'call_id': index, 'phone_number': phone_number, 'transcript': transcripter})
+        #t_data.append({'timestamp':ts, 'call_id': index, 'phone_number': phone_number, 'transcript': transcripter})
+        
+        jsontxt = "{"
+        jsontxt = jsontxt+"'timestamp':'" + str(ts)+"'"
+        jsontxt = jsontxt+",'call_id':'"+str(index)+"'"
+        jsontxt = jsontxt+",'phone_number':'"+str(phone_number)+"'"
+        jsontxt = jsontxt+",'transcript':'"+str(transcripter)+"'"
+        jsontxt = jsontxt+"}"
+
+        send_to_pubsub("full-transcript-topic",jsontxt,project_id)
+
+    ## topics should be envrioinment variables!
+    #send_to_pubsub("word-by-word-topic",wbw_data,project_id)
+    #send_to_pubsub("full-transcript-topic",t_data,project_id)
+
+    #print (t_data)
+    #print (wbw_data)
 
     word_by_word_file="transcripts/raw/"+"i"+index+"p"+phone_number+"w.csv"
     transcript_file="transcripts/raw/"+"i"+index+"p"+phone_number+"t.csv"
