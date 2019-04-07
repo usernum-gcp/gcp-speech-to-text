@@ -14,8 +14,8 @@ bash deploy_gcf.bash $BUCKET
 echo "gsutil cp $samplefile gs://${BUCKET}/wav/legal-services/"
 gsutil cp $samplefile gs://${BUCKET}/wav/legal-services/
 
-echo "sleep 15"
-sleep 15
+echo "sleep 60"
+sleep 60
 
 #https://cloud.google.com/sdk/gcloud/reference/beta/functions/logs/read
 echo "gcloud beta functions logs read ${TRANSCRIBE_FUNCTION_NAME} --limit 50"
