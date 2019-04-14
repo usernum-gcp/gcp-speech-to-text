@@ -3,3 +3,6 @@ response.json
 heb-sample.wav
 gcf/heb-sample.wav
 gcf/0502112239_1_6397392588207366206_1_32.wav
+*.csv
+*.txt
+gcf/write_json.py
