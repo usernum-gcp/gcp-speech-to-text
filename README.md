@@ -9,9 +9,34 @@ This rep is to help ramping up while working with the Google Cloud Speech to Tex
 
 ## What is in here
 
-This repository is supposed to help with starting off at the right foot with the following:
+This repository is to help with starting off at the right foot with the following:
 1. Transcribing voice
 2. Uploading results to bigquery
+
+## Set up a transcription using a VM
+
+* export some envrionment variables
+```
+export ZONE=europe-west1-b
+export VM=transcriber-2
+export PROJECT_ID=$(gcloud config get-value core/project)
+```
+
+* Create a small (n1-standard-1) VM
+> note: ignore the warning about the internal disk size
+```
+gcloud compute --project=$PROJECT_ID \
+instances create $VM --zone=$ZONE --machine-type=n1-standard-1 \
+--subnet=default --network-tier=PREMIUM \
+--scopes=https://www.googleapis.com/auth/cloud-platform \
+--image=debian-9-drawfork-v20190424 \
+--image-project=eip-images \
+ --boot-disk-size=10GB \
+ --boot-disk-type=pd-standard \
+ --boot-disk-device-name=$VM
+```
+
+## Set up a transcription using a Google Cloud Function
 
 ### Transcribing Voice
 1. **Transcribe_word_time_offsets.py**
