@@ -23,7 +23,7 @@ export PROJECT_ID=$(gcloud config get-value core/project)
 ```
 
 * Create a small (n1-standard-1) VM
-> note: ignore the warning about the internal disk size
+> Ignore the warning about the internal disk size
 ```
 gcloud compute --project=$PROJECT_ID \
 instances create $VM --zone=$ZONE --machine-type=n1-standard-1 \
@@ -35,6 +35,13 @@ instances create $VM --zone=$ZONE --machine-type=n1-standard-1 \
  --boot-disk-type=pd-standard \
  --boot-disk-device-name=$VM
 ```
+
+* From MacOS termina: Log in to the server
+```
+gcloud compute ssh $VM --zone $ZONE
+```
+
+* Or from the console: Log in using the 'SSH' button in the 'Compute Engine->VM Instances' screen
 
 ## Set up a transcription using a Google Cloud Function
 
