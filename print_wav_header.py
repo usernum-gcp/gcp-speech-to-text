@@ -40,7 +40,7 @@ def PrintWavHeader(strWAVFile):
     stHeaderFields['NumChannels'] = struct.unpack('<H', bufHeader[22:24])[0]
     stHeaderFields['SampleRate'] = struct.unpack('<L', bufHeader[24:28])[0]
     stHeaderFields['ByteRate'] = struct.unpack('<L', bufHeader[28:32])[0]
-    stHeaderFields['BlockAlign'] = struct.unpack('&lt;H', bufHeader[32:34])[0]
+    #stHeaderFields['BlockAlign'] = struct.unpack('&lt;H', bufHeader[32:34])[0]
     stHeaderFields['BitsPerSample'] = struct.unpack('&lt;H', bufHeader[34:36])[0]
     # Locate & read data chunk
     chunksList = []
