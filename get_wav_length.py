@@ -8,6 +8,13 @@ import time, argparse, datetime, csv,sys,getopt
 
 '''
 
+def get_wav_length2(filename):
+	import scipy.io.wavfile as wav
+	file_path = "/path/to/yourfile.wav"
+	(source_rate, source_sig) = wav.read(file_path)
+	duration_seconds = len(source_sig) / float(source_rate)
+
+
 def get_wav_length(filename):
 	import wave
 	import contextlib
@@ -33,7 +40,7 @@ def main(argv):
 			output_file = arg
 			got_output_file = True
 
-	string = filepath + '\t' + str(get_wav_length(filepath))
+	string = filepath + '\t' + str(get_wav_length2(filepath))
 
 	if (got_output_file):
 		with open(output_file, "a") as myfile:
