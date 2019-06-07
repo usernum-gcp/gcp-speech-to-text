@@ -16,6 +16,13 @@ def get_wav_length2(filename):
 
 	return duration_seconds
 
+def get_wav_length3(filename):
+	import soundfile as sf
+	f = sf.SoundFile('447c040d.wav')
+	print('samples = {}'.format(len(f)))
+	print('sample rate = {}'.format(f.samplerate))
+	print('seconds = {}'.format(len(f) / f.samplerate))
+
 
 def get_wav_length(filename):
 	import wave
@@ -42,7 +49,7 @@ def main(argv):
 			output_file = arg
 			got_output_file = True
 
-	string = filepath + '\t' + str(get_wav_length2(filepath))
+	string = filepath + '\t' + str(get_wav_length3(filepath))
 
 	if (got_output_file):
 		with open(output_file, "a") as myfile:
