@@ -38,10 +38,31 @@ instances create $VM --zone=$ZONE --machine-type=n1-standard-1 \
 
 * From MacOS termina: Log in to the server
 ```
-gcloud compute ssh $VM --zone $ZONE
+gcloud compute ssh $VM --zone $ZONE --project $PROJECT_ID
 ```
 
 * Or from the console: Log in using the 'SSH' button in the 'Compute Engine->VM Instances' screen
+
+* install updates and git
+```
+sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install git -y
+```
+
+* Download the code
+```
+git clone https://github.com/amiteinav/gcp-speech-to-text.git
+```
+
+* Get pip
+```
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; sudo python get-pip.py
+```
+* Install scipy
+```
+pip install scipy --user
+```
+
+
 
 ## Set up a transcription using a Google Cloud Function
 
