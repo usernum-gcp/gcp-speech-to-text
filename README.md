@@ -57,9 +57,10 @@ git clone https://github.com/amiteinav/gcp-speech-to-text.git
 ```
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; sudo python get-pip.py
 ```
-* Install scipy
+* Install soundfile library (https://github.com/bastibe/SoundFile)
 ```
-pip install scipy --user
+sudo apt-get install libsndfile1
+pip install soundfile --user
 ```
 
 
