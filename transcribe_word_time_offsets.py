@@ -205,7 +205,7 @@ def transcribe_file_with_diarization(gcs_uri, index=random.randint(1,92233720368
         sample_rate_hertz=8000,
         language_code='he-IL',
         audio_channel_count=2,
-        enable_separate_recognition_per_channel=True,
+        enable_separate_recognition_per_channel=True
         #enable_speaker_diarization=True,
         #diarization_speaker_count=2
         )
