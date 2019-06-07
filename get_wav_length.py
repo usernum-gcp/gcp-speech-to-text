@@ -18,7 +18,7 @@ def get_wav_length2(filename):
 
 def get_wav_length3(filename):
 	import soundfile as sf
-	f = sf.SoundFile('447c040d.wav')
+	f = sf.SoundFile(filename)
 	print('samples = {}'.format(len(f)))
 	print('sample rate = {}'.format(f.samplerate))
 	print('seconds = {}'.format(len(f) / f.samplerate))
