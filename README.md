@@ -63,6 +63,11 @@ sudo apt-get install libsndfile1
 pip install soundfile --user
 ```
 
+* Install the google cloud speech API python library
+```
+pip install google-cloud-speech --user
+```
+
 
 
 ## Set up a transcription using a Google Cloud Function
