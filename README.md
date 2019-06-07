@@ -68,6 +68,11 @@ pip install soundfile --user
 pip install google-cloud-speech --user
 ```
 
+* Enable the Speech API
+```
+gcloud services enable --project `gcloud config get-value core/project` speech.googleapis.com
+```
+
 
 
 ## Set up a transcription using a Google Cloud Function
