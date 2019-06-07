@@ -10,9 +10,11 @@ import time, argparse, datetime, csv,sys,getopt
 
 def get_wav_length2(filename):
 	import scipy.io.wavfile as wav
-	file_path = "/path/to/yourfile.wav"
-	(source_rate, source_sig) = wav.read(file_path)
+	
+	(source_rate, source_sig) = wav.read(filename)
 	duration_seconds = len(source_sig) / float(source_rate)
+
+	return duration_seconds
 
 
 def get_wav_length(filename):
