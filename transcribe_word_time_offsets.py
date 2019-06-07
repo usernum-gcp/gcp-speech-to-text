@@ -112,7 +112,7 @@ def transcribe_gcs_with_word_time_offsets(
         #sample_rate_hertz=8000,
         language_code=language,
         enable_word_time_offsets=True,
-        enable_speaker_diarization=enable_speaker_diarization,
+        #enable_speaker_diarization=enable_speaker_diarization,
         diarization_speaker_count=2)
         #model='phone_call')
         #use_enhanced=True)
