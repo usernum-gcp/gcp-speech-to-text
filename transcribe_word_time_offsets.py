@@ -270,6 +270,8 @@ def main(argv):
         elif opt == '-s':
             speaker_csv_index = arg
 
+    print "Hello"
+
 
     index=extract_index_from_file_name(url)
     
