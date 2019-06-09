@@ -268,7 +268,7 @@ def main(argv):
         elif opt == "-l":
             language = arg
         elif opt == "-i":
-            fnname_index-arg
+            fname_index=arg
         elif opt == "-u":
             is_gcs = True
             url = arg
