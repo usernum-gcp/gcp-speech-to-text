@@ -279,7 +279,7 @@ def main(argv):
                 encoding=enums.RecognitionConfig.AudioEncoding.MULAW
             elif (arg == "FLAC"):
                 encoding=enums.RecognitionConfig.AudioEncoding.FLAC
-            elif (arg == "LINEAR16")
+            elif (arg == "LINEAR16"):
                 encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16
             else:
                 encoding=enums.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED
