@@ -4,5 +4,5 @@
 
 for file in `ls $1` ; do
 	echo "python wav_to_flac.py $file"
-	python wav_to_flac.py ${1}${file}
+	python wav_to_flac.py ${1}/${file}
 	done
