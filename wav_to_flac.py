@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # pip install pydub --user
+# sudo apt-get install ffmpeg
 
 from os.path import splitext
 from pydub import AudioSegment
