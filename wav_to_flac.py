@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# pip install pydub --user
+
 from os.path import splitext
 from pydub import AudioSegment
 
