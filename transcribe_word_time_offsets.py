@@ -3,9 +3,14 @@
 """
 Example usage:
     
-    python transcribe_word_time_offsets.py -f resources/audio.raw -l 'en-US'
+    python transcribe_word_time_offsets.py -f resources/audio.raw -l 'en-US' -e 'FLAC'
     
-    python transcribe_word_time_offsets.py -u gs://cloud-samples-tests/speech/vr.flac -l 'he-IL'
+    python transcribe_word_time_offsets.py -u gs://cloud-samples-tests/speech/vr.flac -l 'he-IL' -e 'FLAC'
+
+    options for -e option : MULAW / FLAC / LINEAR16
+
+    there is -i index that means the number of field in the filename to use as name
+    01101015000_20190602_002640_230561.wav with -i 2 means : 002640 is the index
 
 """
 
@@ -34,15 +39,18 @@ def message(msg, level="Info"):
 #counting on '_' as separator
 #if nothing is coming back - generating a random for an index
 
-def extract_index_from_file_name(gcs_uri):
+def extract_index_from_file_name(gcs_uri,index=0):
 
     return_value = random.randint(1,9223372036854775807)
 
     for part in gcs_uri.split('_'):
-        if (part.isdigit()):
-            number = int(part)
-            if (number > 999999):
-                return_value=number
+        if (index == 0):
+            if (part.isdigit()):
+                number = int(part)
+                if (number > 999999):
+                    return_value=number
+        else
+            index = index - 1 
 
     return return_value
 
@@ -77,8 +85,6 @@ def transcribe_file_with_word_time_offsets(speech_file,index,language='en-US'):
                 word,
                 start_time.seconds + start_time.nanos * 1e-9,
                 end_time.seconds + end_time.nanos * 1e-9))
-
-
 
 
 # [START speech_transcribe_async_word_time_offsets_gcs]
@@ -248,10 +254,11 @@ def main(argv):
     langauge = 'en-US'
     url=''
     filepath=''
-    encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16
+    fname_index=0
+    encoding=enums.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED
 
     try:
-        opts, args = getopt.getopt(argv,"f:l:u:dms:")
+        opts, args = getopt.getopt(argv,"f:l:u:de:s:i:")
     except getopt.GetoptError:
         sys.exit(42)
     for opt, arg in opts:
@@ -260,20 +267,29 @@ def main(argv):
             is_local = True
         elif opt == "-l":
             language = arg
+        elif opt == "-i":
+            fnname_index-arg
         elif opt == "-u":
             is_gcs = True
             url = arg
         elif opt == "-d":
             enable_speaker_diarization=True
-        elif opt == "-m":
-            encoding=enums.RecognitionConfig.AudioEncoding.MULAW
+        elif opt == "-e":
+            if (arg == "MULAW"):
+                encoding=enums.RecognitionConfig.AudioEncoding.MULAW
+            elif (arg == "FLAC"):
+                encoding=enums.RecognitionConfig.AudioEncoding.FLAC
+            elif (arg == "LINEAR16")
+                encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16
+            else:
+                encoding=enums.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED
         elif opt == '-s':
             speaker_csv_index = arg
 
     print "Hello"
 
 
-    index=extract_index_from_file_name(url)
+    index=extract_index_from_file_name(url,fname_index)
     
     message('now with index {} is_local {} is_gcs {}'.format(index,is_local,is_gcs))
 
