@@ -49,7 +49,7 @@ def extract_index_from_file_name(gcs_uri,index=0):
                 number = int(part)
                 if (number > 999999):
                     return_value=number
-        else
+        else:
             index = index - 1 
 
     return return_value
