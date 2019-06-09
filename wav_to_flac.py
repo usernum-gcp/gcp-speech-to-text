@@ -12,4 +12,5 @@ def wav2flac(wav_path):
 
 if __name__ == "__main__":
     import sys
+    print (sys.argv[1])
     wav2flac(sys.argv[1])
