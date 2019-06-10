@@ -268,7 +268,7 @@ def main(argv):
         elif opt == "-l":
             language = arg
         elif opt == "-i":
-            fname_index=arg
+            fname_index=int(arg)
         elif opt == "-u":
             is_gcs = True
             url = arg
@@ -285,9 +285,6 @@ def main(argv):
                 encoding=enums.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED
         elif opt == '-s':
             speaker_csv_index = arg
-
-    print "Hello"
-
 
     index=extract_index_from_file_name(url,fname_index)
     
