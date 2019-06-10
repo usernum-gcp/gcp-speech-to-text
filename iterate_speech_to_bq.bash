@@ -1,19 +1,22 @@
 #!/bin/bash
 
 file=/tmp/tmpfile$$
+cat /dev/null > ${file}
 
-cat *.csv | grep -v "call_id,word,start_time,end_time,confidence,sentence" > ${file}
 
-bq load --source_format=CSV   name-speech2text:name_speech_to_text_poc.name_speech_to_text_poc_facts ${file} call_id,word,start_time:float,end_time:float,confidence:float,sentence:string
+DATASET=$1
+LOCAL_FOLDER=$2
+TABLE=speech_to_text_word_by_word
+PROJECT_ID=$(gcloud config get-value core/project)
+
+for line in `ls -1 ${LOCAL_FOLDER}/*.csv | grep -v meta | grep -v transcript` ; do
+
+	cat ${LOCAL_FOLDER}/$line | grep -v "call_id,word,start_time,end_time,confidence" >> ${file}
+
+done
+
+bq load --source_format=CSV   ${PROJECT_ID}:${DATASET}.${TABLE} ${file} call_id,word,start_time:float,end_time:float,confidence:float
 
 rm ${file}
 
 exit
-
-for i in `ls -1 * | grep ".csv"` 
-do
-   : 
-   echo $i
-	bq load --source_format=CSV --skip_leading_rows=1  name-speech2text:name_speech_to_text_poc.name_speech_to_text_poc_facts ${i} call_id,word,start_time:float,end_time:float,confidence:float  
- 
-done
