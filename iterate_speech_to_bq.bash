@@ -9,7 +9,7 @@ LOCAL_FOLDER=$2
 TABLE=speech_to_text_word_by_word
 PROJECT_ID=$(gcloud config get-value core/project)
 
-for line in `ls -1 ${LOCAL_FOLDER}/*.csv | grep -v meta | grep -v transcript` ; do
+for line in `ls -1 ${LOCAL_FOLDER} | grep csv | grep -v meta | grep -v transcript` ; do
 
 	cat ${LOCAL_FOLDER}/$line | grep -v "call_id,word,start_time,end_time,confidence" >> ${file}
 
