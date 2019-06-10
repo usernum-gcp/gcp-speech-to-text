@@ -10,6 +10,7 @@ DST_FOLDER=$4
 
 TRANSCRIBE_PY=${HOME}/gcp-speech-to-text/transcribe_word_time_offsets.py
 
+mkdir -p ${DST_FOLDER}
 cd ${DST_FOLDER}
 
 for i in `gsutil ls -r $GS_PATH | grep -i ${FTYPE}`
