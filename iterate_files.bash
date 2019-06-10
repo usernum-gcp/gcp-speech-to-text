@@ -21,3 +21,7 @@ do
    python ${TRANSCRIBE_PY} -u $i -l "${LANG}" -i -e $2 &
 
 done
+
+
+# TO CHECK with a single line if there are files that were not transcribed:
+# for i in `gsutil ls -r ${GS_PATH} | grep -i ${FTYPE} ` ;   do  grep $i meta_* ; if [ $? -ne 0 ] ; then echo $i ; fi ; done  | grep -v csv
