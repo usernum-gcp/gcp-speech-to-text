@@ -5,12 +5,11 @@ Example usage:
     
     python transcribe_word_time_offsets.py -f resources/audio.raw -l 'en-US' -e 'FLAC'
     
-    python transcribe_word_time_offsets.py -u gs://cloud-samples-tests/speech/vr.flac -l 'he-IL' -e 'FLAC'
+    python transcribe_word_time_offsets.py -u gs://cloud-samples-tests/speech/vr.flac -l 'he-IL' -e 'FLAC' 
 
     options for -e option : MULAW / FLAC / LINEAR16
 
-    there is -i index that means the number of field in the filename to use as name
-    01101015000_20190602_002640_230561.wav with -i 2 means : 002640 is the index
+    there is -i : that means the index of the files is random - means not counting on the filename to get an index 
 
 """
 
@@ -39,19 +38,15 @@ def message(msg, level="Info"):
 #counting on '_' as separator
 #if nothing is coming back - generating a random for an index
 
-def extract_index_from_file_name(gcs_uri,index=0):
+def extract_index_from_file_name(gcs_uri):
 
     return_value = random.randint(1,9223372036854775807)
 
     for part in gcs_uri.split('_'):
-        if (index == 0):
-            if (part.isdigit()):
-                number = int(part)
-                if (number > 999999):
-                    return_value=number
-        else:
-            index = index - 1 
-
+        if (part.isdigit()):
+            number = int(part)
+            if (number > 999999):
+                return_value=number
     return return_value
 
 def transcribe_file_with_word_time_offsets(speech_file,index,language='en-US'):
@@ -254,11 +249,12 @@ def main(argv):
     langauge = 'en-US'
     url=''
     filepath=''
-    fname_index=0
+    auto_index=False
     encoding=enums.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED
 
+
     try:
-        opts, args = getopt.getopt(argv,"f:l:u:de:s:i:")
+        opts, args = getopt.getopt(argv,"f:l:u:de:s:i")
     except getopt.GetoptError:
         sys.exit(42)
     for opt, arg in opts:
@@ -268,7 +264,7 @@ def main(argv):
         elif opt == "-l":
             language = arg
         elif opt == "-i":
-            fname_index=int(arg)
+            auto_index=True
         elif opt == "-u":
             is_gcs = True
             url = arg
@@ -286,7 +282,10 @@ def main(argv):
         elif opt == '-s':
             speaker_csv_index = arg
 
-    index=extract_index_from_file_name(url,fname_index)
+    if (auto_index):
+        index=random.randint(1,9223372036854775807)
+    else:
+        index=extract_index_from_file_name(url)
     
     message('now with index {} is_local {} is_gcs {}'.format(index,is_local,is_gcs))
 
