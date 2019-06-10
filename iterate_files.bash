@@ -18,6 +18,6 @@ do
    : 
    echo "Now Handling $i"
    echo "python ${TRANSCRIBE_PY} -u $i -l '${LANG}' -i -e $2  "
-   python ${TRANSCRIBE_PY} -u $i -l '${LANG}' -i -e $2 
+   python ${TRANSCRIBE_PY} -u $i -l "${LANG}" -i -e $2 &
 
 done
