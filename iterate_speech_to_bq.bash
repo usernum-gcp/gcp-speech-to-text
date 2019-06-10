@@ -15,7 +15,7 @@ for line in `ls -1 ${LOCAL_FOLDER} | grep csv | grep -v meta | grep -v transcrip
 
 done
 
-bq load --source_format=CSV   ${PROJECT_ID}:${DATASET}.${TABLE} ${file} call_id,word,start_time:float,end_time:float,confidence:float
+bq load --source_format=CSV   ${PROJECT_ID}:${DATASET}.${TABLE} ${file} call_id:integer,word,start_time:float,end_time:float,confidence:float
 
 rm ${file}
 
