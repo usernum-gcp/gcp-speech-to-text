@@ -53,7 +53,6 @@ def transcribe_file_with_word_time_offsets(speech_file,index,language='en-US'):
     """Transcribe the given audio file synchronously and output the word time
     offsets."""
     
-
     client = speech.SpeechClient()
 
     with io.open(speech_file, 'rb') as audio_file:
