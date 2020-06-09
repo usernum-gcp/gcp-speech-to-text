@@ -6,10 +6,10 @@ cat /dev/null > ${file}
 
 DATASET=$1
 LOCAL_FOLDER=$2
-TABLE=speech_to_text_word_by_word
+TABLE=$3
 PROJECT_ID=$(gcloud config get-value core/project)
 
-for line in `ls -1 ${LOCAL_FOLDER} | grep csv | grep -v meta | grep -v transcript` ; do
+for line in `ls -1 ${LOCAL_FOLDER} | grep csv | grep -v meta | grep -v transcript | grep "\.csv"` ; do
 
 	cat ${LOCAL_FOLDER}/$line | grep -v "call_id,word,start_time,end_time,confidence" >> ${file}
 
