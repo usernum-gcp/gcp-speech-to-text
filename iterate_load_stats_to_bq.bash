@@ -3,7 +3,7 @@
 
 DATASET=$1
 LOCAL_FOLDER=$2
-TABLE=speech_to_text_loading_stats
+TABLE=$3
 PROJECT_ID=$(gcloud config get-value core/project)
 
 # bash iterate_load_stats_to_bq.bash ${DATASET} ${LOCAL_FOLDER} 
